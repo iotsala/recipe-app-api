@@ -71,7 +71,7 @@ class PrivateRecipeAPITests(TestCase):
         create_recipe(user=self.user)
 
         res = self.client.get(RECIPES_URL)
-        recipes = Recipe.objects.all().order_by('-id')
+        recipes = Recipe.objects.order_by('-id')
         serializer = RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
@@ -162,7 +162,7 @@ class PrivateRecipeAPITests(TestCase):
 
         self.assertEqual(recipe.user, self.user)
 
-    def update_user_returns_error(self):
+    def test_update_user_returns_error(self):
         """Test changing the recipe user results in an error."""
         new_user = create_user(email='user2@example.com', password='test123')
         recipe = create_recipe(user=self.user)
@@ -305,16 +305,15 @@ class PrivateRecipeAPITests(TestCase):
             ).exists()
             self.assertTrue(exists)
 
-    def tests_create_recipe_with_existing_ingredient(self):
+    def test_create_recipe_with_existing_ingredient(self):
         """Test creating a new recipe with existing ingredient."""
         ingredient = Ingredient.objects.create(user=self.user, name='Lemon')
         payload = {
-            'name': 'Vietnamese Soup',
-            'time_minuts': 25,
-            'price': Decimal('2.55'),
-            'ingredients': [{'name': 'Lemon'}, {'name': 'Fish sauce'}]
+            'title': 'Vietnamese Soup',
+            'time_minutes': 25,
+            'price': '2.55',
+            'ingredients': [{'name': 'Lemon'}, {'name': 'Fish Sauce'}],
         }
-
         res = self.client.post(RECIPES_URL, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -325,9 +324,7 @@ class PrivateRecipeAPITests(TestCase):
         self.assertIn(ingredient, recipe.ingredients.all())
         for ingredient in payload['ingredients']:
             exists = recipe.ingredients.filter(
-                name=ingredient.name,
-                user=self.user
+                name=ingredient['name'],
+                user=self.user,
             ).exists()
             self.assertTrue(exists)
-
-

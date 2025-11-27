@@ -19,14 +19,12 @@ INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
 def detail_url(ingirident_id):
     """Create and return an ingredient detail url"""
-    url = reverse('recipe:ingredient-detail', args=[ingirident_id])
-    print("URL: " + str(url))
-    return url
+    return reverse('recipe:ingredient-detail', args=[ingirident_id])
 
 
 def create_user(email='user@example.com', password='testpass123'):
     """Create and return user."""
-    return get_user_model().objects.create_user(email, password)
+    return get_user_model().objects.create_user(email=email, password=password)
 
 
 class PublicIngredientsApiTests(TestCase):
