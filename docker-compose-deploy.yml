@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   app:
     build:
@@ -34,9 +32,10 @@ services:
     depends_on:
       - app
     ports:
-      - 8000:8000
+      - 80:8000 # Change this to e.g. 8000 for local testing
     volumes:
       - static-data:/vol/static
+    #command: sleep infinity # Add this line
 
 volumes:
   postgres-data:
